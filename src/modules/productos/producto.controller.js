@@ -109,7 +109,7 @@ async function eliminar(req, res) {
         });
     }
 }
-
+//comentario
 module.exports = {
     obtenerTodos,
     obtenerPorId,
