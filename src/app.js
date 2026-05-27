@@ -5,6 +5,8 @@ const usuarioRoutes = require("./modules/usuarios/usuario.routes");
 const servicioRoutes = require("./modules/servicios/servicio.routes");
 const productoRoutes = require("./modules/productos/producto.routes");
 const citaRoutes = require("./modules/citas/cita.routes");
+const ingresoRoutes = require("./modules/ingresos/ingreso.routes");
+const gastoRoutes = require("./modules/gastos/gasto.routes");
 
 const app = express();
 
@@ -37,5 +39,6 @@ app.use("/api/servicios", servicioRoutes);
 app.use("/api/clientes", clienteRoutes);
 app.use("/api/productos", productoRoutes);
 app.use("/api/citas", citaRoutes);
-
+app.use("/api/ingresos", ingresoRoutes);
+app.use("/api/gastos", gastoRoutes);
 module.exports = app;
