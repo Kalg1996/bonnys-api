@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const pool = require("./config/db");
 const clienteRoutes = require("./modules/clientes/cliente.routes");
 const usuarioRoutes = require("./modules/usuarios/usuario.routes");
@@ -12,6 +13,10 @@ const { verificarToken } = require("./middlewares/auth.middleware");
 
 const app = express();
 
+app.use(cors({
+    origin: "http://localhost:3001",
+    credentials: true
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
