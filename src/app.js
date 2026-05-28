@@ -7,6 +7,8 @@ const productoRoutes = require("./modules/productos/producto.routes");
 const citaRoutes = require("./modules/citas/cita.routes");
 const ingresoRoutes = require("./modules/ingresos/ingreso.routes");
 const gastoRoutes = require("./modules/gastos/gasto.routes");
+const authRoutes = require("./modules/auth/auth.routes");
+const { verificarToken } = require("./middlewares/auth.middleware");
 
 const app = express();
 
@@ -33,12 +35,12 @@ app.get("/api/test-db", async (req, res) => {
         });
     }
 });
-
-app.use("/api/usuarios", usuarioRoutes);
-app.use("/api/servicios", servicioRoutes);
-app.use("/api/clientes", clienteRoutes);
-app.use("/api/productos", productoRoutes);
-app.use("/api/citas", citaRoutes);
-app.use("/api/ingresos", ingresoRoutes);
-app.use("/api/gastos", gastoRoutes);
+app.use("/api/usuarios", verificarToken, usuarioRoutes);
+app.use("/api/clientes", verificarToken, clienteRoutes);
+app.use("/api/servicios", verificarToken, servicioRoutes);
+app.use("/api/productos", verificarToken, productoRoutes);
+app.use("/api/citas", verificarToken, citaRoutes);
+app.use("/api/ingresos", verificarToken, ingresoRoutes);
+app.use("/api/gastos", verificarToken, gastoRoutes);
+app.use("/api/auth", authRoutes);
 module.exports = app;

@@ -71,9 +71,20 @@ async function eliminar(id) {
     return result.affectedRows;
 }
 
+
+async function obtenerPorNombreUsuario(nombre_usuario) {
+    const [rows] = await pool.query(
+        "SELECT * FROM usuarios WHERE nombre_usuario = ?",
+        [nombre_usuario]
+    );
+
+    return rows[0];
+}
+
 module.exports = {
     obtenerTodos,
     obtenerPorId,
+    obtenerPorNombreUsuario,
     crear,
     actualizar,
     eliminar
