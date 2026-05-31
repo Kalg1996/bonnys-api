@@ -52,6 +52,19 @@ async function obtenerGaleriaProducto(idProducto) {
     return rows;
 }
 
+async function obtenerCitasPorFecha(fecha) {
+    const [rows] = await pool.query(
+        `SELECT id_cita, id_usuario, fecha_cita, hora_inicio, hora_fin, estado
+         FROM citas
+         WHERE fecha_cita = ?
+           AND estado <> 'CANCELADA'
+         ORDER BY hora_inicio ASC`,
+        [fecha]
+    );
+
+    return rows;
+}
+
 async function buscarClientePorTelefonoOCorreo(telefono1, correo) {
     const filtros = [];
     const valores = [];
@@ -157,6 +170,7 @@ module.exports = {
     obtenerProductoActivoPorId,
     obtenerGaleriaServicio,
     obtenerGaleriaProducto,
+    obtenerCitasPorFecha,
     buscarClientePorTelefonoOCorreo,
     crearCliente,
     obtenerClientePorId,

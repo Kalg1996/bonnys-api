@@ -64,6 +64,25 @@ async function obtenerGaleriaProducto(req, res) {
     }
 }
 
+async function obtenerDisponibilidad(req, res) {
+    try {
+        const disponibilidad = await publicService.obtenerDisponibilidad(
+            req.query.fecha,
+            req.query.id_servicio
+        );
+
+        res.status(200).json({
+            mensaje: "Disponibilidad obtenida correctamente",
+            data: disponibilidad
+        });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener disponibilidad",
+            error: error.message
+        });
+    }
+}
+
 async function agendarCita(req, res) {
     try {
         const cita = await publicService.agendarCita(req.body);
@@ -91,5 +110,6 @@ module.exports = {
     obtenerProductos,
     obtenerGaleriaServicio,
     obtenerGaleriaProducto,
+    obtenerDisponibilidad,
     agendarCita
 };

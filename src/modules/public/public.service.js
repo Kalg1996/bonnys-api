@@ -36,6 +36,69 @@ async function obtenerGaleriaProducto(idProducto) {
     return await publicRepository.obtenerGaleriaProducto(idProducto);
 }
 
+function horaAMinutos(hora) {
+    const [horas, minutos] = String(hora).slice(0, 5).split(":").map(Number);
+
+    return horas * 60 + minutos;
+}
+
+function minutosAHora(totalMinutos) {
+    const horas = Math.floor(totalMinutos / 60);
+    const minutos = totalMinutos % 60;
+
+    return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`;
+}
+
+function existeCruce(slotInicio, slotFin, citas) {
+    return citas.some((cita) => {
+        const citaInicio = horaAMinutos(cita.hora_inicio);
+        const citaFin = horaAMinutos(cita.hora_fin);
+
+        return slotInicio < citaFin && slotFin > citaInicio;
+    });
+}
+
+async function obtenerDisponibilidad(fecha, idServicio) {
+    if (!fecha || !idServicio) {
+        throw crearErrorValidacion("fecha e id_servicio son obligatorios");
+    }
+
+    validarFechaRequerida(fecha, "fecha");
+
+    const servicio = await publicRepository.obtenerServicioActivoPorId(idServicio);
+
+    if (!servicio) {
+        throw crearErrorValidacion("Servicio no encontrado");
+    }
+
+    const duracion = Number(servicio.duracion_minutos);
+
+    if (!duracion || duracion <= 0) {
+        throw crearErrorValidacion("El servicio no tiene una duración válida");
+    }
+
+    const inicioLaboral = horaAMinutos("09:00");
+    const finLaboral = horaAMinutos("18:00");
+    const citas = await publicRepository.obtenerCitasPorFecha(fecha);
+    const horarios = [];
+
+    for (let inicio = inicioLaboral; inicio + duracion <= finLaboral; inicio += duracion) {
+        const fin = inicio + duracion;
+
+        horarios.push({
+            hora_inicio: minutosAHora(inicio),
+            hora_fin: minutosAHora(fin),
+            disponible: !existeCruce(inicio, fin, citas)
+        });
+    }
+
+    return {
+        fecha,
+        id_servicio: Number(idServicio),
+        horarios
+    };
+}
+
 async function agendarCita(datos) {
     if (!datos.id_servicio) {
         return null;
@@ -97,5 +160,6 @@ module.exports = {
     obtenerProductos,
     obtenerGaleriaServicio,
     obtenerGaleriaProducto,
+    obtenerDisponibilidad,
     agendarCita
 };
