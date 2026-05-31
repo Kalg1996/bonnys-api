@@ -9,8 +9,8 @@ async function obtenerTodos(req, res) {
             data: productos
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener productos",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener productos",
             error: error.message
         });
     }
@@ -33,8 +33,8 @@ async function obtenerPorId(req, res) {
             data: producto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener producto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener producto",
             error: error.message
         });
     }
@@ -55,8 +55,8 @@ async function crear(req, res) {
             data: producto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al crear producto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al crear producto",
             error: error.message
         });
     }
@@ -79,8 +79,8 @@ async function actualizar(req, res) {
             data: producto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar producto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al actualizar producto",
             error: error.message
         });
     }
@@ -103,8 +103,8 @@ async function eliminar(req, res) {
             data: producto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar producto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al eliminar producto",
             error: error.message
         });
     }

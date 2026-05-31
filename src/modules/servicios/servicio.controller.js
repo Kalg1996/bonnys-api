@@ -9,8 +9,8 @@ async function obtenerTodos(req, res) {
             data: servicios
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener servicios",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener servicios",
             error: error.message
         });
     }
@@ -33,8 +33,8 @@ async function obtenerPorId(req, res) {
             data: servicio
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener servicio",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener servicio",
             error: error.message
         });
     }
@@ -55,8 +55,8 @@ async function crear(req, res) {
             data: servicio
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al crear servicio",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al crear servicio",
             error: error.message
         });
     }
@@ -79,8 +79,8 @@ async function actualizar(req, res) {
             data: servicio
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar servicio",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al actualizar servicio",
             error: error.message
         });
     }
@@ -103,8 +103,8 @@ async function eliminar(req, res) {
             data: servicio
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar servicio",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al eliminar servicio",
             error: error.message
         });
     }

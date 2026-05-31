@@ -9,8 +9,8 @@ async function obtenerTodos(req, res) {
             data: gastos
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener gastos",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener gastos",
             error: error.message
         });
     }
@@ -33,8 +33,8 @@ async function obtenerPorId(req, res) {
             data: gasto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener gasto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener gasto",
             error: error.message
         });
     }
@@ -55,8 +55,8 @@ async function crear(req, res) {
             data: gasto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al crear gasto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al crear gasto",
             error: error.message
         });
     }
@@ -79,8 +79,8 @@ async function actualizar(req, res) {
             data: gasto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar gasto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al actualizar gasto",
             error: error.message
         });
     }
@@ -103,8 +103,8 @@ async function eliminar(req, res) {
             data: gasto
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar gasto",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al eliminar gasto",
             error: error.message
         });
     }

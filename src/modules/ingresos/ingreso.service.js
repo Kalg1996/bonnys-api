@@ -1,4 +1,8 @@
 const ingresoRepository = require("./ingreso.repository");
+const {
+    validarTextoRequerido,
+    validarNumeroMinimo
+} = require("../../utils/validation");
 
 async function obtenerTodos() {
     return await ingresoRepository.obtenerTodos();
@@ -13,9 +17,10 @@ async function obtenerPorId(id) {
 }
 
 async function crear(datos) {
-    if (!datos.tipo_ingreso || !datos.concepto || !datos.monto || !datos.metodo_pago) {
-        return null;
-    }
+    validarTextoRequerido(datos.tipo_ingreso, "tipo_ingreso");
+    validarTextoRequerido(datos.concepto, "concepto");
+    validarNumeroMinimo(datos.monto, "monto", 0);
+    validarTextoRequerido(datos.metodo_pago, "metodo_pago");
 
     const nuevoIngreso = {
         tipo_ingreso: datos.tipo_ingreso,
@@ -45,15 +50,20 @@ async function actualizar(id, datos) {
     }
 
     const ingresoActualizado = {
-        tipo_ingreso: datos.tipo_ingreso || ingresoExistente.tipo_ingreso,
-        concepto: datos.concepto || ingresoExistente.concepto,
+        tipo_ingreso: datos.tipo_ingreso ?? ingresoExistente.tipo_ingreso,
+        concepto: datos.concepto ?? ingresoExistente.concepto,
         monto: datos.monto ?? ingresoExistente.monto,
-        metodo_pago: datos.metodo_pago || ingresoExistente.metodo_pago,
+        metodo_pago: datos.metodo_pago ?? ingresoExistente.metodo_pago,
         fecha_ingreso: datos.fecha_ingreso || ingresoExistente.fecha_ingreso,
         id_cliente: datos.id_cliente ?? ingresoExistente.id_cliente,
         id_usuario: datos.id_usuario ?? ingresoExistente.id_usuario,
         observaciones: datos.observaciones ?? ingresoExistente.observaciones
     };
+
+    validarTextoRequerido(ingresoActualizado.tipo_ingreso, "tipo_ingreso");
+    validarTextoRequerido(ingresoActualizado.concepto, "concepto");
+    validarNumeroMinimo(ingresoActualizado.monto, "monto", 0);
+    validarTextoRequerido(ingresoActualizado.metodo_pago, "metodo_pago");
 
     await ingresoRepository.actualizar(id, ingresoActualizado);
 

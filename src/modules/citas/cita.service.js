@@ -1,4 +1,9 @@
 const citaRepository = require("./cita.repository");
+const {
+    crearErrorValidacion,
+    validarFechaRequerida,
+    validarRangoHoras
+} = require("../../utils/validation");
 
 async function obtenerTodos() {
     return await citaRepository.obtenerTodos();
@@ -22,6 +27,20 @@ async function crear(datos) {
         !datos.hora_fin
     ) {
         return null;
+    }
+
+    validarFechaRequerida(datos.fecha_cita, "fecha_cita");
+    validarRangoHoras(datos.hora_inicio, datos.hora_fin);
+
+    const existeCruce = await citaRepository.existeCruceHorario(
+        datos.id_usuario,
+        datos.fecha_cita,
+        datos.hora_inicio,
+        datos.hora_fin
+    );
+
+    if (existeCruce) {
+        throw crearErrorValidacion("Ya existe una cita en ese horario");
     }
 
     const nuevaCita = {
@@ -61,6 +80,21 @@ async function actualizar(id, datos) {
         estado: datos.estado ?? citaExistente.estado,
         observaciones: datos.observaciones ?? citaExistente.observaciones
     };
+
+    validarFechaRequerida(citaActualizada.fecha_cita, "fecha_cita");
+    validarRangoHoras(citaActualizada.hora_inicio, citaActualizada.hora_fin);
+
+    const existeCruce = await citaRepository.existeCruceHorario(
+        citaActualizada.id_usuario,
+        citaActualizada.fecha_cita,
+        citaActualizada.hora_inicio,
+        citaActualizada.hora_fin,
+        id
+    );
+
+    if (existeCruce) {
+        throw crearErrorValidacion("Ya existe una cita en ese horario");
+    }
 
     await citaRepository.actualizar(id, citaActualizada);
 

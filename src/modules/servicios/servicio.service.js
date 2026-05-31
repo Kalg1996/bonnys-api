@@ -1,4 +1,8 @@
 const servicioRepository = require("./servicio.repository");
+const {
+    validarTextoRequerido,
+    validarNumeroMinimo
+} = require("../../utils/validation");
 
 async function obtenerTodos() {
     return await servicioRepository.obtenerTodos();
@@ -13,17 +17,12 @@ async function obtenerPorId(id) {
 }
 
 async function crear(datos) {
-    console.log(datos);
-    if (
-        !datos.nombre ||
-        datos.precio === undefined ||
-        datos.duracion_minutos === undefined
-    ) {
-        return null;
-    }
+    validarTextoRequerido(datos.nombre, "nombre");
+    validarNumeroMinimo(datos.precio, "precio", 0);
+    validarNumeroMinimo(datos.duracion_minutos, "duracion_minutos", 1);
 
     const nuevoServicio = {
-        nombre: datos.nombre,
+        nombre: datos.nombre.trim(),
         descripcion: datos.descripcion || null,
         precio: datos.precio,
         duracion_minutos: datos.duracion_minutos,
@@ -49,7 +48,7 @@ async function actualizar(id, datos) {
     }
 
     const servicioActualizado = {
-        nombre: datos.nombre || servicioExistente.nombre,
+        nombre: datos.nombre ?? servicioExistente.nombre,
         descripcion: datos.descripcion ?? servicioExistente.descripcion,
         precio: datos.precio ?? servicioExistente.precio,
         duracion_minutos:
@@ -58,6 +57,10 @@ async function actualizar(id, datos) {
         url_foto: datos.url_foto ?? servicioExistente.url_foto,
         url_video: datos.url_video ?? servicioExistente.url_video
     };
+
+    validarTextoRequerido(servicioActualizado.nombre, "nombre");
+    validarNumeroMinimo(servicioActualizado.precio, "precio", 0);
+    validarNumeroMinimo(servicioActualizado.duracion_minutos, "duracion_minutos", 1);
 
     await servicioRepository.actualizar(id, servicioActualizado);
 

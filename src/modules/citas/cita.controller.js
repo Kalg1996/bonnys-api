@@ -9,8 +9,8 @@ async function obtenerTodos(req, res) {
             data: citas
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener citas",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener citas",
             error: error.message
         });
     }
@@ -33,8 +33,8 @@ async function obtenerPorId(req, res) {
             data: cita
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener cita",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener cita",
             error: error.message
         });
     }
@@ -55,8 +55,8 @@ async function crear(req, res) {
             data: cita
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al crear cita",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al crear cita",
             error: error.message
         });
     }
@@ -79,8 +79,8 @@ async function actualizar(req, res) {
             data: cita
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar cita",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al actualizar cita",
             error: error.message
         });
     }
@@ -103,8 +103,8 @@ async function eliminar(req, res) {
             data: cita
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar cita",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al eliminar cita",
             error: error.message
         });
     }

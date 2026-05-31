@@ -1,4 +1,9 @@
 const clienteRepository = require("./cliente.repository");
+const {
+    validarTextoRequerido,
+    validarCorreo,
+    validarTelefono
+} = require("../../utils/validation");
 
 async function obtenerTodos() {
     return await clienteRepository.obtenerTodos();
@@ -13,13 +18,14 @@ async function obtenerPorId(id) {
 }
 
 async function crear(datos) {
-    if (!datos.nombre || !datos.apellido) {
-        return null;
-    }
+    validarTextoRequerido(datos.nombre, "nombre");
+    validarTextoRequerido(datos.apellido, "apellido");
+    validarCorreo(datos.correo);
+    validarTelefono(datos.telefono1);
 
     const nuevoCliente = {
-        nombre: datos.nombre,
-        apellido: datos.apellido,
+        nombre: datos.nombre.trim(),
+        apellido: datos.apellido.trim(),
         telefono1: datos.telefono1 || null,
         telefono2: datos.telefono2 || null,
         correo: datos.correo || null,
@@ -43,13 +49,18 @@ async function actualizar(id, datos) {
     }
 
     const clienteActualizado = {
-        nombre: datos.nombre || clienteExistente.nombre,
-        apellido: datos.apellido || clienteExistente.apellido,
+        nombre: datos.nombre ?? clienteExistente.nombre,
+        apellido: datos.apellido ?? clienteExistente.apellido,
         telefono1: datos.telefono1 ?? clienteExistente.telefono1,
         telefono2: datos.telefono2 ?? clienteExistente.telefono2,
         correo: datos.correo ?? clienteExistente.correo,
         direccion: datos.direccion ?? clienteExistente.direccion
     };
+
+    validarTextoRequerido(clienteActualizado.nombre, "nombre");
+    validarTextoRequerido(clienteActualizado.apellido, "apellido");
+    validarCorreo(clienteActualizado.correo);
+    validarTelefono(clienteActualizado.telefono1);
 
     await clienteRepository.actualizar(id, clienteActualizado);
 

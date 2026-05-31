@@ -9,8 +9,8 @@ async function obtenerTodos(req, res) {
             data: clientes
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener clientes",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener clientes",
             error: error.message
         });
     }
@@ -33,8 +33,8 @@ async function obtenerPorId(req, res) {
             data: cliente
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener cliente",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener cliente",
             error: error.message
         });
     }
@@ -55,8 +55,8 @@ async function crear(req, res) {
             data: cliente
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al crear cliente",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al crear cliente",
             error: error.message
         });
     }
@@ -79,8 +79,8 @@ async function actualizar(req, res) {
             data: cliente
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar cliente",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al actualizar cliente",
             error: error.message
         });
     }
@@ -103,8 +103,8 @@ async function eliminar(req, res) {
             data: cliente
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar cliente",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al eliminar cliente",
             error: error.message
         });
     }

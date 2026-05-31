@@ -55,6 +55,31 @@ async function crear(cita) {
     return result.insertId;
 }
 
+async function existeCruceHorario(idUsuario, fechaCita, horaInicio, horaFin, idIgnorar = null) {
+    const valores = [idUsuario, fechaCita, horaFin, horaInicio];
+    let filtroId = "";
+
+    if (idIgnorar) {
+        filtroId = "AND id_cita <> ?";
+        valores.push(idIgnorar);
+    }
+
+    const [rows] = await pool.query(
+        `SELECT id_cita
+         FROM citas
+         WHERE id_usuario = ?
+           AND fecha_cita = ?
+           AND estado <> 'CANCELADA'
+           AND hora_inicio < ?
+           AND hora_fin > ?
+           ${filtroId}
+         LIMIT 1`,
+        valores
+    );
+
+    return rows.length > 0;
+}
+
 async function actualizar(id, cita) {
     const [result] = await pool.query(
         `UPDATE citas
@@ -90,6 +115,7 @@ module.exports = {
     obtenerTodos,
     obtenerPorId,
     crear,
+    existeCruceHorario,
     actualizar,
     eliminar
 };

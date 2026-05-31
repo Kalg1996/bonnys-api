@@ -9,8 +9,8 @@ async function obtenerTodos(req, res) {
             data: ingresos
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener ingresos",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener ingresos",
             error: error.message
         });
     }
@@ -33,8 +33,8 @@ async function obtenerPorId(req, res) {
             data: ingreso
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al obtener ingreso",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener ingreso",
             error: error.message
         });
     }
@@ -55,8 +55,8 @@ async function crear(req, res) {
             data: ingreso
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al crear ingreso",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al crear ingreso",
             error: error.message
         });
     }
@@ -79,8 +79,8 @@ async function actualizar(req, res) {
             data: ingreso
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al actualizar ingreso",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al actualizar ingreso",
             error: error.message
         });
     }
@@ -103,8 +103,8 @@ async function eliminar(req, res) {
             data: ingreso
         });
     } catch (error) {
-        res.status(500).json({
-            mensaje: "Error al eliminar ingreso",
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al eliminar ingreso",
             error: error.message
         });
     }
