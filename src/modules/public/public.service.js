@@ -49,6 +49,21 @@ function minutosAHora(totalMinutos) {
     return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`;
 }
 
+function obtenerDiaSemana(fecha) {
+    const dias = [
+        "DOMINGO",
+        "LUNES",
+        "MARTES",
+        "MIERCOLES",
+        "JUEVES",
+        "VIERNES",
+        "SABADO"
+    ];
+    const fechaLocal = new Date(`${fecha}T00:00:00`);
+
+    return dias[fechaLocal.getDay()];
+}
+
 function existeCruce(slotInicio, slotFin, citas) {
     return citas.some((cita) => {
         const citaInicio = horaAMinutos(cita.hora_inicio);
@@ -77,8 +92,20 @@ async function obtenerDisponibilidad(fecha, idServicio) {
         throw crearErrorValidacion("El servicio no tiene una duración válida");
     }
 
-    const inicioLaboral = horaAMinutos("09:00");
-    const finLaboral = horaAMinutos("18:00");
+    const diaSemana = obtenerDiaSemana(fecha);
+    const horarioSalon = await publicRepository.obtenerHorarioSalonPorDia(diaSemana);
+
+    if (!horarioSalon || !horarioSalon.activo) {
+        return {
+            fecha,
+            id_servicio: Number(idServicio),
+            mensaje: "El salón está cerrado ese día",
+            horarios: []
+        };
+    }
+
+    const inicioLaboral = horaAMinutos(horarioSalon.hora_inicio);
+    const finLaboral = horaAMinutos(horarioSalon.hora_fin);
     const citas = await publicRepository.obtenerCitasPorFecha(fecha);
     const horarios = [];
 
@@ -95,6 +122,9 @@ async function obtenerDisponibilidad(fecha, idServicio) {
     return {
         fecha,
         id_servicio: Number(idServicio),
+        dia_semana: diaSemana,
+        hora_inicio_salon: minutosAHora(inicioLaboral),
+        hora_fin_salon: minutosAHora(finLaboral),
         horarios
     };
 }

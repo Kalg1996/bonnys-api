@@ -72,7 +72,7 @@ async function obtenerDisponibilidad(req, res) {
         );
 
         res.status(200).json({
-            mensaje: "Disponibilidad obtenida correctamente",
+            mensaje: disponibilidad.mensaje || "Disponibilidad obtenida correctamente",
             data: disponibilidad
         });
     } catch (error) {

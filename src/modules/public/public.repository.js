@@ -65,6 +65,15 @@ async function obtenerCitasPorFecha(fecha) {
     return rows;
 }
 
+async function obtenerHorarioSalonPorDia(diaSemana) {
+    const [rows] = await pool.query(
+        "SELECT * FROM horarios_salon WHERE dia_semana = ?",
+        [diaSemana]
+    );
+
+    return rows[0] || null;
+}
+
 async function buscarClientePorTelefonoOCorreo(telefono1, correo) {
     const filtros = [];
     const valores = [];
@@ -171,6 +180,7 @@ module.exports = {
     obtenerGaleriaServicio,
     obtenerGaleriaProducto,
     obtenerCitasPorFecha,
+    obtenerHorarioSalonPorDia,
     buscarClientePorTelefonoOCorreo,
     crearCliente,
     obtenerClientePorId,
