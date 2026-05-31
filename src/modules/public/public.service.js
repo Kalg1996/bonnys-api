@@ -16,6 +16,26 @@ async function obtenerProductos() {
     return await publicRepository.obtenerProductosActivos();
 }
 
+async function obtenerGaleriaServicio(idServicio) {
+    const servicio = await publicRepository.obtenerServicioActivoPorId(idServicio);
+
+    if (!servicio) {
+        throw crearErrorValidacion("Servicio no encontrado");
+    }
+
+    return await publicRepository.obtenerGaleriaServicio(idServicio);
+}
+
+async function obtenerGaleriaProducto(idProducto) {
+    const producto = await publicRepository.obtenerProductoActivoPorId(idProducto);
+
+    if (!producto) {
+        throw crearErrorValidacion("Producto no encontrado");
+    }
+
+    return await publicRepository.obtenerGaleriaProducto(idProducto);
+}
+
 async function agendarCita(datos) {
     if (!datos.id_servicio) {
         return null;
@@ -75,5 +95,7 @@ async function agendarCita(datos) {
 module.exports = {
     obtenerServicios,
     obtenerProductos,
+    obtenerGaleriaServicio,
+    obtenerGaleriaProducto,
     agendarCita
 };

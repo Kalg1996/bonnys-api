@@ -11,6 +11,7 @@ const gastoRoutes = require("./modules/gastos/gasto.routes");
 const authRoutes = require("./modules/auth/auth.routes");
 const publicRoutes = require("./modules/public/public.routes");
 const uploadRoutes = require("./modules/uploads/uploads.routes");
+const galeriaRoutes = require("./modules/galerias/galeria.routes");
 const { verificarToken } = require("./middlewares/auth.middleware");
 
 const app = express();
@@ -45,6 +46,7 @@ app.get("/api/test-db", async (req, res) => {
 });
 app.use("/api/public", publicRoutes);
 app.use("/api/uploads", verificarToken, uploadRoutes);
+app.use("/api/galerias", verificarToken, galeriaRoutes);
 app.use("/api/usuarios", verificarToken, usuarioRoutes);
 app.use("/api/clientes", verificarToken, clienteRoutes);
 app.use("/api/servicios", verificarToken, servicioRoutes);

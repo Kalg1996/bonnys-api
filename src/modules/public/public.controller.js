@@ -32,6 +32,38 @@ async function obtenerProductos(req, res) {
     }
 }
 
+async function obtenerGaleriaServicio(req, res) {
+    try {
+        const galeria = await publicService.obtenerGaleriaServicio(req.params.id);
+
+        res.status(200).json({
+            mensaje: "Galería pública de servicio obtenida correctamente",
+            data: galeria
+        });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener galería pública de servicio",
+            error: error.message
+        });
+    }
+}
+
+async function obtenerGaleriaProducto(req, res) {
+    try {
+        const galeria = await publicService.obtenerGaleriaProducto(req.params.id);
+
+        res.status(200).json({
+            mensaje: "Galería pública de producto obtenida correctamente",
+            data: galeria
+        });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener galería pública de producto",
+            error: error.message
+        });
+    }
+}
+
 async function agendarCita(req, res) {
     try {
         const cita = await publicService.agendarCita(req.body);
@@ -57,5 +89,7 @@ async function agendarCita(req, res) {
 module.exports = {
     obtenerServicios,
     obtenerProductos,
+    obtenerGaleriaServicio,
+    obtenerGaleriaProducto,
     agendarCita
 };

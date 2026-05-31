@@ -8,9 +8,45 @@ async function obtenerServiciosActivos() {
     return rows;
 }
 
+async function obtenerServicioActivoPorId(id) {
+    const [rows] = await pool.query(
+        "SELECT * FROM servicios WHERE id_servicio = ? AND estado = true",
+        [id]
+    );
+
+    return rows[0] || null;
+}
+
 async function obtenerProductosActivos() {
     const [rows] = await pool.query(
         "SELECT * FROM productos WHERE estado = true ORDER BY nombre ASC"
+    );
+
+    return rows;
+}
+
+async function obtenerProductoActivoPorId(id) {
+    const [rows] = await pool.query(
+        "SELECT * FROM productos WHERE id_producto = ? AND estado = true",
+        [id]
+    );
+
+    return rows[0] || null;
+}
+
+async function obtenerGaleriaServicio(idServicio) {
+    const [rows] = await pool.query(
+        "SELECT * FROM servicios_galeria WHERE id_servicio = ? ORDER BY orden ASC, id_media ASC",
+        [idServicio]
+    );
+
+    return rows;
+}
+
+async function obtenerGaleriaProducto(idProducto) {
+    const [rows] = await pool.query(
+        "SELECT * FROM productos_galeria WHERE id_producto = ? ORDER BY orden ASC, id_media ASC",
+        [idProducto]
     );
 
     return rows;
@@ -116,7 +152,11 @@ async function obtenerCitaPorId(id) {
 
 module.exports = {
     obtenerServiciosActivos,
+    obtenerServicioActivoPorId,
     obtenerProductosActivos,
+    obtenerProductoActivoPorId,
+    obtenerGaleriaServicio,
+    obtenerGaleriaProducto,
     buscarClientePorTelefonoOCorreo,
     crearCliente,
     obtenerClientePorId,
