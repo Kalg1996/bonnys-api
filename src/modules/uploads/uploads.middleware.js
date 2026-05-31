@@ -1,5 +1,10 @@
 const path = require("path");
+const fs = require("fs");
 const multer = require("multer");
+const ffmpeg = require("fluent-ffmpeg");
+const ffprobeStatic = require("ffprobe-static");
+
+ffmpeg.setFfprobePath(ffprobeStatic.path);
 
 const TIPOS = {
     productos: "productos",
@@ -10,6 +15,7 @@ const EXTENSIONES_IMAGEN = [".jpg", ".jpeg", ".png", ".webp"];
 const EXTENSIONES_VIDEO = [".mp4", ".webm", ".mov"];
 const MAX_IMAGEN = 5 * 1024 * 1024;
 const MAX_VIDEO = 50 * 1024 * 1024;
+const MAX_DURACION_VIDEO = 60;
 
 function crearStorage(tipo) {
     return multer.diskStorage({
@@ -60,9 +66,49 @@ const uploadVideoProducto = crearUpload("productos", EXTENSIONES_VIDEO, MAX_VIDE
 const uploadImagenServicio = crearUpload("servicios", EXTENSIONES_IMAGEN, MAX_IMAGEN);
 const uploadVideoServicio = crearUpload("servicios", EXTENSIONES_VIDEO, MAX_VIDEO);
 
+function eliminarArchivo(filePath) {
+    fs.unlink(filePath, () => {});
+}
+
+function obtenerDuracionVideo(filePath) {
+    return new Promise((resolve, reject) => {
+        ffmpeg.ffprobe(filePath, (error, metadata) => {
+            if (error) {
+                reject(error);
+                return;
+            }
+
+            resolve(Number(metadata?.format?.duration || 0));
+        });
+    });
+}
+
+async function validarDuracionVideo(req, res, next) {
+    if (!req.file) {
+        next();
+        return;
+    }
+
+    try {
+        const duracion = await obtenerDuracionVideo(req.file.path);
+
+        if (duracion > MAX_DURACION_VIDEO) {
+            eliminarArchivo(req.file.path);
+            next(new Error("El video no puede durar más de 60 segundos"));
+            return;
+        }
+
+        next();
+    } catch (error) {
+        eliminarArchivo(req.file.path);
+        next(new Error("No se pudo validar la duración del video"));
+    }
+}
+
 module.exports = {
     uploadImagenProducto,
     uploadVideoProducto,
     uploadImagenServicio,
-    uploadVideoServicio
+    uploadVideoServicio,
+    validarDuracionVideo
 };

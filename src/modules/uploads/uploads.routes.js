@@ -4,7 +4,8 @@ const {
     uploadImagenProducto,
     uploadVideoProducto,
     uploadImagenServicio,
-    uploadVideoServicio
+    uploadVideoServicio,
+    validarDuracionVideo
 } = require("./uploads.middleware");
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.post(
 router.post(
     "/productos/video",
     uploadVideoProducto,
+    validarDuracionVideo,
     uploadController.manejarErrorUpload,
     uploadController.responderArchivo("productos")
 );
@@ -33,6 +35,7 @@ router.post(
 router.post(
     "/servicios/video",
     uploadVideoServicio,
+    validarDuracionVideo,
     uploadController.manejarErrorUpload,
     uploadController.responderArchivo("servicios")
 );
