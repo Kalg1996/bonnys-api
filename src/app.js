@@ -10,6 +10,7 @@ const ingresoRoutes = require("./modules/ingresos/ingreso.routes");
 const gastoRoutes = require("./modules/gastos/gasto.routes");
 const authRoutes = require("./modules/auth/auth.routes");
 const publicRoutes = require("./modules/public/public.routes");
+const uploadRoutes = require("./modules/uploads/uploads.routes");
 const { verificarToken } = require("./middlewares/auth.middleware");
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+app.use("/uploads", express.static("uploads"));
 
 app.get("/", (req, res) => {
     res.json({
@@ -42,6 +44,7 @@ app.get("/api/test-db", async (req, res) => {
     }
 });
 app.use("/api/public", publicRoutes);
+app.use("/api/uploads", verificarToken, uploadRoutes);
 app.use("/api/usuarios", verificarToken, usuarioRoutes);
 app.use("/api/clientes", verificarToken, clienteRoutes);
 app.use("/api/servicios", verificarToken, servicioRoutes);
