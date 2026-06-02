@@ -5,6 +5,9 @@ const {
     uploadVideoProducto,
     uploadImagenServicio,
     uploadVideoServicio,
+    uploadLogoConfiguracion,
+    uploadPortadaConfiguracion,
+    uploadFaviconConfiguracion,
     validarDuracionVideo
 } = require("./uploads.middleware");
 
@@ -38,6 +41,27 @@ router.post(
     validarDuracionVideo,
     uploadController.manejarErrorUpload,
     uploadController.responderArchivo("servicios")
+);
+
+router.post(
+    "/configuracion/logo",
+    uploadLogoConfiguracion,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("configuracion")
+);
+
+router.post(
+    "/configuracion/portada",
+    uploadPortadaConfiguracion,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("configuracion")
+);
+
+router.post(
+    "/configuracion/favicon",
+    uploadFaviconConfiguracion,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("configuracion")
 );
 
 module.exports = router;

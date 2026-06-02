@@ -8,13 +8,17 @@ ffmpeg.setFfprobePath(ffprobeStatic.path);
 
 const TIPOS = {
     productos: "productos",
-    servicios: "servicios"
+    servicios: "servicios",
+    configuracion: "configuracion"
 };
 
 const EXTENSIONES_IMAGEN = [".jpg", ".jpeg", ".png", ".webp"];
 const EXTENSIONES_VIDEO = [".mp4", ".webm", ".mov"];
+const EXTENSIONES_FAVICON = [".ico", ".png", ".svg"];
 const MAX_IMAGEN = 5 * 1024 * 1024;
 const MAX_VIDEO = 50 * 1024 * 1024;
+const MAX_CONFIG_IMAGEN = 2 * 1024 * 1024;
+const MAX_PORTADA = 8 * 1024 * 1024;
 const MAX_DURACION_VIDEO = 60;
 
 function crearStorage(tipo) {
@@ -65,6 +69,9 @@ const uploadImagenProducto = crearUpload("productos", EXTENSIONES_IMAGEN, MAX_IM
 const uploadVideoProducto = crearUpload("productos", EXTENSIONES_VIDEO, MAX_VIDEO);
 const uploadImagenServicio = crearUpload("servicios", EXTENSIONES_IMAGEN, MAX_IMAGEN);
 const uploadVideoServicio = crearUpload("servicios", EXTENSIONES_VIDEO, MAX_VIDEO);
+const uploadLogoConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_CONFIG_IMAGEN);
+const uploadPortadaConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_PORTADA);
+const uploadFaviconConfiguracion = crearUpload("configuracion", EXTENSIONES_FAVICON, MAX_CONFIG_IMAGEN);
 
 function eliminarArchivo(filePath) {
     fs.unlink(filePath, () => {});
@@ -110,5 +117,8 @@ module.exports = {
     uploadVideoProducto,
     uploadImagenServicio,
     uploadVideoServicio,
+    uploadLogoConfiguracion,
+    uploadPortadaConfiguracion,
+    uploadFaviconConfiguracion,
     validarDuracionVideo
 };
