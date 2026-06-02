@@ -76,6 +76,7 @@ const uploadVideoServicio = crearUpload("servicios", EXTENSIONES_VIDEO, MAX_VIDE
 const uploadLogoConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_CONFIG_IMAGEN);
 const uploadPortadaConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_PORTADA);
 const uploadFaviconConfiguracion = crearUpload("configuracion", EXTENSIONES_FAVICON, MAX_CONFIG_IMAGEN);
+const uploadFondoConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_PORTADA);
 const uploadFotoTestimonio = crearUpload("testimonios", EXTENSIONES_IMAGEN, MAX_IMAGEN);
 const uploadImagenPromocion = crearUpload("promociones", EXTENSIONES_IMAGEN, MAX_IMAGEN);
 const uploadMediaGaleriaTrabajo = crearUpload(
@@ -164,6 +165,7 @@ module.exports = {
     uploadLogoConfiguracion,
     uploadPortadaConfiguracion,
     uploadFaviconConfiguracion,
+    uploadFondoConfiguracion,
     uploadFotoTestimonio,
     uploadImagenPromocion,
     uploadMediaGaleriaTrabajo,

@@ -110,13 +110,24 @@ async function obtenerUrlsReferenciadas() {
         "SELECT url_foto AS url FROM testimonios WHERE url_foto IS NOT NULL AND url_foto <> ''",
         "SELECT logo_url AS url FROM configuracion_sitio WHERE logo_url IS NOT NULL AND logo_url <> ''",
         "SELECT portada_url AS url FROM configuracion_sitio WHERE portada_url IS NOT NULL AND portada_url <> ''",
-        "SELECT favicon_url AS url FROM configuracion_sitio WHERE favicon_url IS NOT NULL AND favicon_url <> ''"
+        "SELECT favicon_url AS url FROM configuracion_sitio WHERE favicon_url IS NOT NULL AND favicon_url <> ''",
+        "SELECT fondo_imagen_url AS url FROM configuracion_sitio WHERE fondo_imagen_url IS NOT NULL AND fondo_imagen_url <> ''"
     ];
 
     const referenciadas = new Set();
 
     for (const consulta of consultas) {
-        const [rows] = await pool.query(consulta);
+        let rows = [];
+
+        try {
+            [rows] = await pool.query(consulta);
+        } catch (error) {
+            if (error.code === "ER_BAD_FIELD_ERROR") {
+                continue;
+            }
+
+            throw error;
+        }
 
         rows.forEach((row) => {
             const urlNormalizada = normalizarUrlUpload(row.url);

@@ -8,6 +8,12 @@ const CAMPOS = [
     "color_principal",
     "color_secundario",
     "color_acento",
+    "fondo_tipo",
+    "fondo_color_1",
+    "fondo_color_2",
+    "fondo_color_3",
+    "fondo_imagen_url",
+    "fondo_gradiente_direccion",
     "telefono_principal",
     "telefono_secundario",
     "correo_contacto",
@@ -33,6 +39,12 @@ const CONFIG_DEFAULT = {
     color_principal: "#B91C1C",
     color_secundario: "#7F1D1D",
     color_acento: "#D97706",
+    fondo_tipo: "COLOR",
+    fondo_color_1: "#FFF1F2",
+    fondo_color_2: "#FEE2E2",
+    fondo_color_3: "#FFFFFF",
+    fondo_imagen_url: "",
+    fondo_gradiente_direccion: "135deg",
     telefono_principal: "",
     telefono_secundario: "",
     correo_contacto: "",
@@ -50,6 +62,25 @@ const CONFIG_DEFAULT = {
     meta_description: "Sistema web para salón de belleza"
 };
 
+let columnasDisponiblesCache = null;
+
+async function obtenerColumnasDisponibles() {
+    if (columnasDisponiblesCache) {
+        return columnasDisponiblesCache;
+    }
+
+    const [rows] = await pool.query("SHOW COLUMNS FROM configuracion_sitio");
+    columnasDisponiblesCache = new Set(rows.map((row) => row.Field));
+
+    return columnasDisponiblesCache;
+}
+
+async function filtrarCamposDisponibles(campos) {
+    const columnasDisponibles = await obtenerColumnasDisponibles();
+
+    return campos.filter((campo) => columnasDisponibles.has(campo));
+}
+
 async function obtenerPrimera() {
     const [rows] = await pool.query(
         "SELECT * FROM configuracion_sitio ORDER BY id_configuracion ASC LIMIT 1"
@@ -59,9 +90,10 @@ async function obtenerPrimera() {
 }
 
 async function crearDefault() {
-    const columnas = CAMPOS.join(", ");
-    const placeholders = CAMPOS.map(() => "?").join(", ");
-    const valores = CAMPOS.map((campo) => CONFIG_DEFAULT[campo]);
+    const camposDisponibles = await filtrarCamposDisponibles(CAMPOS);
+    const columnas = camposDisponibles.join(", ");
+    const placeholders = camposDisponibles.map(() => "?").join(", ");
+    const valores = camposDisponibles.map((campo) => CONFIG_DEFAULT[campo]);
     const [result] = await pool.query(
         `INSERT INTO configuracion_sitio (${columnas}) VALUES (${placeholders})`,
         valores
@@ -82,7 +114,8 @@ async function obtenerOCrear() {
 }
 
 async function actualizar(id, datos) {
-    const campos = Object.keys(datos).filter((campo) => CAMPOS.includes(campo));
+    const camposPermitidos = Object.keys(datos).filter((campo) => CAMPOS.includes(campo));
+    const campos = await filtrarCamposDisponibles(camposPermitidos);
 
     if (campos.length === 0) {
         return 0;
@@ -102,6 +135,7 @@ async function actualizar(id, datos) {
 
 module.exports = {
     CAMPOS,
+    CONFIG_DEFAULT,
     obtenerOCrear,
     actualizar
 };

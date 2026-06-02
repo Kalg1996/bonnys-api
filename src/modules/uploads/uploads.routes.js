@@ -8,6 +8,7 @@ const {
     uploadLogoConfiguracion,
     uploadPortadaConfiguracion,
     uploadFaviconConfiguracion,
+    uploadFondoConfiguracion,
     uploadFotoTestimonio,
     uploadImagenPromocion,
     uploadMediaGaleriaTrabajo,
@@ -71,6 +72,14 @@ router.post(
 router.post(
     "/configuracion/favicon",
     uploadFaviconConfiguracion,
+    validarLimiteAlmacenamiento,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("configuracion")
+);
+
+router.post(
+    "/configuracion/fondo",
+    uploadFondoConfiguracion,
     validarLimiteAlmacenamiento,
     uploadController.manejarErrorUpload,
     uploadController.responderArchivo("configuracion")

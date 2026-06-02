@@ -5,17 +5,26 @@ const {
     validarTextoRequerido
 } = require("../../utils/validation");
 
-const CAMPOS_COLOR = ["color_principal", "color_secundario", "color_acento"];
+const CAMPOS_COLOR = [
+    "color_principal",
+    "color_secundario",
+    "color_acento",
+    "fondo_color_1",
+    "fondo_color_2",
+    "fondo_color_3"
+];
 const CAMPOS_URL = [
     "logo_url",
     "portada_url",
     "favicon_url",
+    "fondo_imagen_url",
     "facebook_url",
     "instagram_url",
     "tiktok_url",
     "youtube_url",
     "google_maps_url"
 ];
+const FONDOS_PERMITIDOS = ["COLOR", "GRADIENTE", "IMAGEN"];
 
 function validarHex(valor, campo) {
     if (!valor) return;
@@ -45,6 +54,26 @@ function validarWhatsapp(valor) {
     }
 }
 
+function validarFondoTipo(valor) {
+    if (!valor) return;
+
+    if (!FONDOS_PERMITIDOS.includes(valor)) {
+        throw crearErrorValidacion("fondo_tipo solo puede ser COLOR, GRADIENTE o IMAGEN");
+    }
+}
+
+function validarDireccionGradiente(valor) {
+    if (!valor) return;
+
+    const direccionValida =
+        /^[0-9]{1,3}deg$/.test(String(valor)) ||
+        /^to (right|left|top|bottom)( (right|left|top|bottom))?$/.test(String(valor));
+
+    if (!direccionValida) {
+        throw crearErrorValidacion("fondo_gradiente_direccion no tiene un formato válido");
+    }
+}
+
 function filtrarDatos(datos) {
     return Object.keys(datos).reduce((acc, campo) => {
         if (configuracionRepository.CAMPOS.includes(campo)) {
@@ -62,12 +91,19 @@ function validar(datos) {
 
     CAMPOS_COLOR.forEach((campo) => validarHex(datos[campo], campo));
     CAMPOS_URL.forEach((campo) => validarUrl(datos[campo], campo));
+    validarFondoTipo(datos.fondo_tipo);
+    validarDireccionGradiente(datos.fondo_gradiente_direccion);
     validarCorreo(datos.correo_contacto);
     validarWhatsapp(datos.whatsapp_numero);
 }
 
 async function obtenerConfiguracion() {
-    return await configuracionRepository.obtenerOCrear();
+    const configuracion = await configuracionRepository.obtenerOCrear();
+
+    return {
+        ...configuracionRepository.CONFIG_DEFAULT,
+        ...(configuracion || {})
+    };
 }
 
 async function actualizarConfiguracion(datos) {
@@ -81,7 +117,7 @@ async function actualizarConfiguracion(datos) {
     validar(datosCompletos);
     await configuracionRepository.actualizar(actual.id_configuracion, datosFiltrados);
 
-    return await configuracionRepository.obtenerOCrear();
+    return await obtenerConfiguracion();
 }
 
 module.exports = {
