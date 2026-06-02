@@ -9,7 +9,10 @@ ffmpeg.setFfprobePath(ffprobeStatic.path);
 const TIPOS = {
     productos: "productos",
     servicios: "servicios",
-    configuracion: "configuracion"
+    configuracion: "configuracion",
+    testimonios: "testimonios",
+    promociones: "promociones",
+    "galeria-trabajos": "galeria-trabajos"
 };
 
 const EXTENSIONES_IMAGEN = [".jpg", ".jpeg", ".png", ".webp"];
@@ -72,6 +75,13 @@ const uploadVideoServicio = crearUpload("servicios", EXTENSIONES_VIDEO, MAX_VIDE
 const uploadLogoConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_CONFIG_IMAGEN);
 const uploadPortadaConfiguracion = crearUpload("configuracion", EXTENSIONES_IMAGEN, MAX_PORTADA);
 const uploadFaviconConfiguracion = crearUpload("configuracion", EXTENSIONES_FAVICON, MAX_CONFIG_IMAGEN);
+const uploadFotoTestimonio = crearUpload("testimonios", EXTENSIONES_IMAGEN, MAX_IMAGEN);
+const uploadImagenPromocion = crearUpload("promociones", EXTENSIONES_IMAGEN, MAX_IMAGEN);
+const uploadMediaGaleriaTrabajo = crearUpload(
+    "galeria-trabajos",
+    [...EXTENSIONES_IMAGEN, ...EXTENSIONES_VIDEO],
+    MAX_VIDEO
+);
 
 function eliminarArchivo(filePath) {
     fs.unlink(filePath, () => {});
@@ -96,6 +106,13 @@ async function validarDuracionVideo(req, res, next) {
         return;
     }
 
+    const extension = path.extname(req.file.originalname).toLowerCase();
+
+    if (!EXTENSIONES_VIDEO.includes(extension)) {
+        next();
+        return;
+    }
+
     try {
         const duracion = await obtenerDuracionVideo(req.file.path);
 
@@ -112,6 +129,23 @@ async function validarDuracionVideo(req, res, next) {
     }
 }
 
+function validarTamanoMediaGaleria(req, res, next) {
+    if (!req.file) {
+        next();
+        return;
+    }
+
+    const extension = path.extname(req.file.originalname).toLowerCase();
+
+    if (EXTENSIONES_IMAGEN.includes(extension) && req.file.size > MAX_IMAGEN) {
+        eliminarArchivo(req.file.path);
+        next(new Error("La imagen excede el tamaño máximo permitido"));
+        return;
+    }
+
+    next();
+}
+
 module.exports = {
     uploadImagenProducto,
     uploadVideoProducto,
@@ -120,5 +154,9 @@ module.exports = {
     uploadLogoConfiguracion,
     uploadPortadaConfiguracion,
     uploadFaviconConfiguracion,
+    uploadFotoTestimonio,
+    uploadImagenPromocion,
+    uploadMediaGaleriaTrabajo,
+    validarTamanoMediaGaleria,
     validarDuracionVideo
 };

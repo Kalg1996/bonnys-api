@@ -3,7 +3,10 @@ const path = require("path");
 const CARPETAS = {
     productos: "productos",
     servicios: "servicios",
-    configuracion: "configuracion"
+    configuracion: "configuracion",
+    testimonios: "testimonios",
+    promociones: "promociones",
+    "galeria-trabajos": "galeria-trabajos"
 };
 
 function obtenerCarpeta(tipo) {

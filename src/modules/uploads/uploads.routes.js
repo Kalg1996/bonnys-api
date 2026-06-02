@@ -8,6 +8,10 @@ const {
     uploadLogoConfiguracion,
     uploadPortadaConfiguracion,
     uploadFaviconConfiguracion,
+    uploadFotoTestimonio,
+    uploadImagenPromocion,
+    uploadMediaGaleriaTrabajo,
+    validarTamanoMediaGaleria,
     validarDuracionVideo
 } = require("./uploads.middleware");
 
@@ -62,6 +66,29 @@ router.post(
     uploadFaviconConfiguracion,
     uploadController.manejarErrorUpload,
     uploadController.responderArchivo("configuracion")
+);
+
+router.post(
+    "/testimonios/foto",
+    uploadFotoTestimonio,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("testimonios")
+);
+
+router.post(
+    "/promociones/imagen",
+    uploadImagenPromocion,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("promociones")
+);
+
+router.post(
+    "/galeria-trabajos/media",
+    uploadMediaGaleriaTrabajo,
+    validarTamanoMediaGaleria,
+    validarDuracionVideo,
+    uploadController.manejarErrorUpload,
+    uploadController.responderArchivo("galeria-trabajos")
 );
 
 module.exports = router;
