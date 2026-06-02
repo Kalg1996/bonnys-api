@@ -3,6 +3,7 @@ const fs = require("fs");
 const multer = require("multer");
 const ffmpeg = require("fluent-ffmpeg");
 const ffprobeStatic = require("ffprobe-static");
+const almacenamientoService = require("../almacenamiento/almacenamiento.service");
 
 ffmpeg.setFfprobePath(ffprobeStatic.path);
 
@@ -146,6 +147,15 @@ function validarTamanoMediaGaleria(req, res, next) {
     next();
 }
 
+async function validarLimiteAlmacenamiento(req, res, next) {
+    try {
+        await almacenamientoService.validarEspacioDisponible(req.file);
+        next();
+    } catch (error) {
+        next(error);
+    }
+}
+
 module.exports = {
     uploadImagenProducto,
     uploadVideoProducto,
@@ -157,6 +167,7 @@ module.exports = {
     uploadFotoTestimonio,
     uploadImagenPromocion,
     uploadMediaGaleriaTrabajo,
+    validarLimiteAlmacenamiento,
     validarTamanoMediaGaleria,
     validarDuracionVideo
 };

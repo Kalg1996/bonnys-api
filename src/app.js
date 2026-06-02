@@ -17,6 +17,7 @@ const configuracionSitioRoutes = require("./modules/configuracionSitio/configura
 const testimonioRoutes = require("./modules/testimonios/testimonio.routes");
 const promocionRoutes = require("./modules/promociones/promocion.routes");
 const galeriaTrabajoRoutes = require("./modules/galeriaTrabajos/galeriaTrabajo.routes");
+const almacenamientoRoutes = require("./modules/almacenamiento/almacenamiento.routes");
 const { verificarToken } = require("./middlewares/auth.middleware");
 
 const app = express();
@@ -57,6 +58,7 @@ app.use("/api/configuracion-sitio", verificarToken, configuracionSitioRoutes);
 app.use("/api/testimonios", verificarToken, testimonioRoutes);
 app.use("/api/promociones", verificarToken, promocionRoutes);
 app.use("/api/galeria-trabajos", verificarToken, galeriaTrabajoRoutes);
+app.use("/api/almacenamiento", verificarToken, almacenamientoRoutes);
 app.use("/api/usuarios", verificarToken, usuarioRoutes);
 app.use("/api/clientes", verificarToken, clienteRoutes);
 app.use("/api/servicios", verificarToken, servicioRoutes);
