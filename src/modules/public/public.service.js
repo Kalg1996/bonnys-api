@@ -49,6 +49,32 @@ function minutosAHora(totalMinutos) {
     return `${String(horas).padStart(2, "0")}:${String(minutos).padStart(2, "0")}`;
 }
 
+function obtenerFechaLocalActual() {
+    const ahora = new Date();
+    const year = ahora.getFullYear();
+    const month = String(ahora.getMonth() + 1).padStart(2, "0");
+    const day = String(ahora.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function obtenerMinutosActuales() {
+    const ahora = new Date();
+
+    return ahora.getHours() * 60 + ahora.getMinutes();
+}
+
+function validarFechaHoraFutura(fecha, horaInicio) {
+    const hoy = obtenerFechaLocalActual();
+
+    if (
+        fecha < hoy ||
+        (fecha === hoy && horaAMinutos(horaInicio) <= obtenerMinutosActuales())
+    ) {
+        throw crearErrorValidacion("No puedes agendar una cita en una fecha u hora pasada");
+    }
+}
+
 function obtenerDiaSemana(fecha) {
     const dias = [
         "DOMINGO",
@@ -80,6 +106,17 @@ async function obtenerDisponibilidad(fecha, idServicio) {
 
     validarFechaRequerida(fecha, "fecha");
 
+    const hoy = obtenerFechaLocalActual();
+
+    if (fecha < hoy) {
+        return {
+            fecha,
+            id_servicio: Number(idServicio),
+            mensaje: "No puedes seleccionar una fecha pasada",
+            horarios: []
+        };
+    }
+
     const servicio = await publicRepository.obtenerServicioActivoPorId(idServicio);
 
     if (!servicio) {
@@ -108,9 +145,15 @@ async function obtenerDisponibilidad(fecha, idServicio) {
     const finLaboral = horaAMinutos(horarioSalon.hora_fin);
     const citas = await publicRepository.obtenerCitasPorFecha(fecha);
     const horarios = [];
+    const esHoy = fecha === hoy;
+    const minutosActuales = obtenerMinutosActuales();
 
     for (let inicio = inicioLaboral; inicio + duracion <= finLaboral; inicio += duracion) {
         const fin = inicio + duracion;
+
+        if (esHoy && inicio <= minutosActuales) {
+            continue;
+        }
 
         horarios.push({
             hora_inicio: minutosAHora(inicio),
@@ -119,12 +162,17 @@ async function obtenerDisponibilidad(fecha, idServicio) {
         });
     }
 
+    const mensaje = esHoy && horarios.length === 0
+        ? "Ya no hay horarios disponibles para hoy"
+        : "";
+
     return {
         fecha,
         id_servicio: Number(idServicio),
         dia_semana: diaSemana,
         hora_inicio_salon: minutosAHora(inicioLaboral),
         hora_fin_salon: minutosAHora(finLaboral),
+        mensaje,
         horarios
     };
 }
@@ -140,6 +188,7 @@ async function agendarCita(datos) {
     validarTelefono(datos.telefono1);
     validarFechaRequerida(datos.fecha_cita, "fecha_cita");
     validarRangoHoras(datos.hora_inicio, datos.hora_fin);
+    validarFechaHoraFutura(datos.fecha_cita, datos.hora_inicio);
 
     const idUsuario = 1;
     const existeCruce = await publicRepository.existeCruceHorario(
