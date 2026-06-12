@@ -23,7 +23,7 @@ const { verificarToken } = require("./middlewares/auth.middleware");
 const app = express();
 
 app.use(cors({
-    origin: "http://localhost:3001",
+    origin: process.env.FRONTEND_URL || "http://localhost:3001",
     credentials: true
 }));
 app.use(express.json());
