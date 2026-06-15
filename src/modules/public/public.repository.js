@@ -103,15 +103,16 @@ async function buscarClientePorTelefonoOCorreo(telefono1, correo) {
 async function crearCliente(cliente) {
     const [result] = await pool.query(
         `INSERT INTO clientes
-         (nombre, apellido, telefono1, telefono2, correo, direccion)
-         VALUES (?, ?, ?, ?, ?, ?)`,
+         (nombre, apellido, telefono1, telefono2, correo, direccion, fecha_nacimiento)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
             cliente.nombre,
             cliente.apellido,
             cliente.telefono1,
             cliente.telefono2,
             cliente.correo,
-            cliente.direccion
+            cliente.direccion,
+            cliente.fecha_nacimiento
         ]
     );
 

@@ -46,6 +46,37 @@ function validarFechaRequerida(valor, campo) {
     }
 }
 
+function validarFechaOpcionalNoFutura(valor, campo) {
+    if (!valor) return null;
+
+    const fecha = String(valor).trim();
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+        throw crearErrorValidacion(`${campo} debe tener formato YYYY-MM-DD`);
+    }
+
+    const [year, month, day] = fecha.split("-").map(Number);
+    const fechaDate = new Date(year, month - 1, day);
+
+    if (
+        Number.isNaN(fechaDate.getTime()) ||
+        fechaDate.getFullYear() !== year ||
+        fechaDate.getMonth() !== month - 1 ||
+        fechaDate.getDate() !== day
+    ) {
+        throw crearErrorValidacion(`${campo} debe ser una fecha válida`);
+    }
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    if (fechaDate > hoy) {
+        throw crearErrorValidacion(`${campo} no puede ser una fecha futura`);
+    }
+
+    return fecha;
+}
+
 function validarRangoHoras(horaInicio, horaFin) {
     validarFechaRequerida(horaInicio, "hora_inicio");
     validarFechaRequerida(horaFin, "hora_fin");
@@ -62,5 +93,6 @@ module.exports = {
     validarTelefono,
     validarNumeroMinimo,
     validarFechaRequerida,
+    validarFechaOpcionalNoFutura,
     validarRangoHoras
 };

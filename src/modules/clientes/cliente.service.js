@@ -2,7 +2,8 @@ const clienteRepository = require("./cliente.repository");
 const {
     validarTextoRequerido,
     validarCorreo,
-    validarTelefono
+    validarTelefono,
+    validarFechaOpcionalNoFutura
 } = require("../../utils/validation");
 
 async function obtenerTodos() {
@@ -22,6 +23,10 @@ async function crear(datos) {
     validarTextoRequerido(datos.apellido, "apellido");
     validarCorreo(datos.correo);
     validarTelefono(datos.telefono1);
+    const fechaNacimiento = validarFechaOpcionalNoFutura(
+        datos.fecha_nacimiento,
+        "fecha_nacimiento"
+    );
 
     const nuevoCliente = {
         nombre: datos.nombre.trim(),
@@ -29,7 +34,8 @@ async function crear(datos) {
         telefono1: datos.telefono1 || null,
         telefono2: datos.telefono2 || null,
         correo: datos.correo || null,
-        direccion: datos.direccion || null
+        direccion: datos.direccion || null,
+        fecha_nacimiento: fechaNacimiento
     };
 
     const idCreado = await clienteRepository.crear(nuevoCliente);
@@ -54,7 +60,14 @@ async function actualizar(id, datos) {
         telefono1: datos.telefono1 ?? clienteExistente.telefono1,
         telefono2: datos.telefono2 ?? clienteExistente.telefono2,
         correo: datos.correo ?? clienteExistente.correo,
-        direccion: datos.direccion ?? clienteExistente.direccion
+        direccion: datos.direccion ?? clienteExistente.direccion,
+        fecha_nacimiento:
+            datos.fecha_nacimiento !== undefined
+                ? validarFechaOpcionalNoFutura(
+                    datos.fecha_nacimiento,
+                    "fecha_nacimiento"
+                )
+                : clienteExistente.fecha_nacimiento
     };
 
     validarTextoRequerido(clienteActualizado.nombre, "nombre");

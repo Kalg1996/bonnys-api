@@ -20,15 +20,16 @@ async function obtenerPorId(id) {
 async function crear(cliente) {
     const [result] = await pool.query(
         `INSERT INTO clientes 
-    (nombre, apellido, telefono1, telefono2, correo, direccion)
-    VALUES (?, ?, ?, ?, ?, ?)`,
+    (nombre, apellido, telefono1, telefono2, correo, direccion, fecha_nacimiento)
+    VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
             cliente.nombre,
             cliente.apellido,
             cliente.telefono1,
             cliente.telefono2,
             cliente.correo,
-            cliente.direccion
+            cliente.direccion,
+            cliente.fecha_nacimiento
         ]
     );
 
@@ -38,7 +39,7 @@ async function crear(cliente) {
 async function actualizar(id, cliente) {
     const [result] = await pool.query(
         `UPDATE clientes
-     SET nombre = ?, apellido = ?, telefono1 = ?, telefono2 = ?, correo = ?, direccion = ?
+     SET nombre = ?, apellido = ?, telefono1 = ?, telefono2 = ?, correo = ?, direccion = ?, fecha_nacimiento = ?
      WHERE id_cliente = ?`,
         [
             cliente.nombre,
@@ -47,6 +48,7 @@ async function actualizar(id, cliente) {
             cliente.telefono2,
             cliente.correo,
             cliente.direccion,
+            cliente.fecha_nacimiento,
             id
         ]
     );
