@@ -18,6 +18,10 @@ async function obtenerPorId(id) {
     return await clienteRepository.obtenerPorId(id);
 }
 
+async function obtenerCumpleaniosProximos() {
+    return await clienteRepository.obtenerCumpleaniosProximos();
+}
+
 async function crear(datos) {
     validarTextoRequerido(datos.nombre, "nombre");
     validarTextoRequerido(datos.apellido, "apellido");
@@ -99,6 +103,7 @@ async function eliminar(id) {
 module.exports = {
     obtenerTodos,
     obtenerPorId,
+    obtenerCumpleaniosProximos,
     crear,
     actualizar,
     eliminar

@@ -4,6 +4,7 @@ const clienteController = require("./cliente.controller");
 const router = express.Router();
 
 router.get("/", clienteController.obtenerTodos);
+router.get("/cumpleanios/proximos", clienteController.obtenerCumpleaniosProximos);
 router.get("/:id", clienteController.obtenerPorId);
 router.post("/", clienteController.crear);
 router.put("/:id", clienteController.actualizar);

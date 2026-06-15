@@ -40,6 +40,22 @@ async function obtenerPorId(req, res) {
     }
 }
 
+async function obtenerCumpleaniosProximos(req, res) {
+    try {
+        const clientes = await clienteService.obtenerCumpleaniosProximos();
+
+        res.status(200).json({
+            mensaje: "Cumpleaños próximos obtenidos correctamente",
+            data: clientes
+        });
+    } catch (error) {
+        res.status(error.statusCode || 500).json({
+            mensaje: error.statusCode ? error.message : "Error al obtener cumpleaños próximos",
+            error: error.message
+        });
+    }
+}
+
 async function crear(req, res) {
     try {
         const cliente = await clienteService.crear(req.body);
@@ -113,6 +129,7 @@ async function eliminar(req, res) {
 module.exports = {
     obtenerTodos,
     obtenerPorId,
+    obtenerCumpleaniosProximos,
     crear,
     actualizar,
     eliminar

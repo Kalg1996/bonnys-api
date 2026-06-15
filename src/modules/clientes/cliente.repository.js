@@ -17,6 +17,33 @@ async function obtenerPorId(id) {
     return rows[0];
 }
 
+async function obtenerCumpleaniosProximos() {
+    const [rows] = await pool.query(
+        `SELECT
+            id_cliente,
+            nombre,
+            apellido,
+            telefono1,
+            correo,
+            fecha_nacimiento,
+            CASE
+                WHEN DATE_FORMAT(fecha_nacimiento, '%m-%d') = DATE_FORMAT(CURDATE(), '%m-%d') THEN 0
+                WHEN DATE_FORMAT(fecha_nacimiento, '%m-%d') = DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 1 DAY), '%m-%d') THEN 1
+                WHEN DATE_FORMAT(fecha_nacimiento, '%m-%d') = DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 2 DAY), '%m-%d') THEN 2
+            END AS dias_restantes
+        FROM clientes
+        WHERE fecha_nacimiento IS NOT NULL
+            AND DATE_FORMAT(fecha_nacimiento, '%m-%d') IN (
+                DATE_FORMAT(CURDATE(), '%m-%d'),
+                DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 1 DAY), '%m-%d'),
+                DATE_FORMAT(DATE_ADD(CURDATE(), INTERVAL 2 DAY), '%m-%d')
+            )
+        ORDER BY dias_restantes ASC, nombre ASC, apellido ASC`
+    );
+
+    return rows;
+}
+
 async function crear(cliente) {
     const [result] = await pool.query(
         `INSERT INTO clientes 
@@ -68,6 +95,7 @@ async function eliminar(id) {
 module.exports = {
     obtenerTodos,
     obtenerPorId,
+    obtenerCumpleaniosProximos,
     crear,
     actualizar,
     eliminar
