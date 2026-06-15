@@ -16,15 +16,25 @@ async function obtenerPorId(id) {
     return await servicioRepository.obtenerPorId(id);
 }
 
+function normalizarPrecio(valor) {
+    if (valor === undefined || valor === null || valor === "") {
+        return null;
+    }
+
+    validarNumeroMinimo(valor, "precio", 0);
+
+    return valor;
+}
+
 async function crear(datos) {
     validarTextoRequerido(datos.nombre, "nombre");
-    validarNumeroMinimo(datos.precio, "precio", 0);
+    const precio = normalizarPrecio(datos.precio);
     validarNumeroMinimo(datos.duracion_minutos, "duracion_minutos", 1);
 
     const nuevoServicio = {
         nombre: datos.nombre.trim(),
         descripcion: datos.descripcion || null,
-        precio: datos.precio,
+        precio,
         duracion_minutos: datos.duracion_minutos,
         estado: datos.estado ?? true,
         url_foto: datos.url_foto || null,
@@ -50,7 +60,10 @@ async function actualizar(id, datos) {
     const servicioActualizado = {
         nombre: datos.nombre ?? servicioExistente.nombre,
         descripcion: datos.descripcion ?? servicioExistente.descripcion,
-        precio: datos.precio ?? servicioExistente.precio,
+        precio:
+            datos.precio !== undefined
+                ? normalizarPrecio(datos.precio)
+                : servicioExistente.precio,
         duracion_minutos:
             datos.duracion_minutos ?? servicioExistente.duracion_minutos,
         estado: datos.estado ?? servicioExistente.estado,
@@ -59,7 +72,6 @@ async function actualizar(id, datos) {
     };
 
     validarTextoRequerido(servicioActualizado.nombre, "nombre");
-    validarNumeroMinimo(servicioActualizado.precio, "precio", 0);
     validarNumeroMinimo(servicioActualizado.duracion_minutos, "duracion_minutos", 1);
 
     await servicioRepository.actualizar(id, servicioActualizado);

@@ -1,6 +1,25 @@
 const pool = require("../../config/db");
 
+let precioNullableVerificado = false;
+
+async function asegurarPrecioNullable() {
+    if (precioNullableVerificado) {
+        return;
+    }
+
+    const [rows] = await pool.query("SHOW COLUMNS FROM servicios LIKE 'precio'");
+    const precio = rows[0];
+
+    if (precio && precio.Null === "NO") {
+        await pool.query("ALTER TABLE servicios MODIFY precio DECIMAL(10,2) NULL");
+    }
+
+    precioNullableVerificado = true;
+}
+
 async function obtenerTodos() {
+    await asegurarPrecioNullable();
+
     const [rows] = await pool.query(
         "SELECT * FROM servicios ORDER BY id_servicio DESC"
     );
@@ -9,6 +28,8 @@ async function obtenerTodos() {
 }
 
 async function obtenerPorId(id) {
+    await asegurarPrecioNullable();
+
     const [rows] = await pool.query(
         "SELECT * FROM servicios WHERE id_servicio = ?",
         [id]
@@ -18,6 +39,8 @@ async function obtenerPorId(id) {
 }
 
 async function crear(servicio) {
+    await asegurarPrecioNullable();
+
     const [result] = await pool.query(
         `INSERT INTO servicios
     (nombre, descripcion, precio, duracion_minutos, estado, url_foto, url_video)
@@ -37,6 +60,8 @@ async function crear(servicio) {
 }
 
 async function actualizar(id, servicio) {
+    await asegurarPrecioNullable();
+
     const [result] = await pool.query(
         `UPDATE servicios
      SET nombre = ?, descripcion = ?, precio = ?, duracion_minutos = ?,

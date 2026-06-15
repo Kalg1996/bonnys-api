@@ -46,7 +46,7 @@ async function crear(req, res) {
 
         if (!servicio) {
             return res.status(400).json({
-                mensaje: "Nombre, precio y duración son obligatorios"
+                mensaje: "Nombre y duración son obligatorios"
             });
         }
 

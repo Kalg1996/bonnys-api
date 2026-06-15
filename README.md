@@ -500,7 +500,7 @@ Requiere `Authorization: Bearer <token>`.
 | `id_servicio` | number | Identificador del servicio. |
 | `nombre` | string | Nombre del servicio. |
 | `descripcion` | string/null | Descripcion. |
-| `precio` | number | Precio del servicio. |
+| `precio` | number/null | Precio del servicio. |
 | `duracion_minutos` | number | Duracion en minutos. |
 | `estado` | boolean | Estado activo/inactivo. Por defecto `true`. |
 | `url_foto` | string/null | URL de foto. |
@@ -549,9 +549,9 @@ Body:
 }
 ```
 
-Campos requeridos: `nombre`, `precio`, `duracion_minutos`.
+Campos requeridos: `nombre`, `duracion_minutos`.
 
-Campos opcionales: `descripcion`, `estado`, `url_foto`, `url_video`.
+Campos opcionales: `descripcion`, `precio`, `estado`, `url_foto`, `url_video`.
 
 Respuesta `201`:
 
@@ -566,7 +566,7 @@ Respuesta `400`:
 
 ```json
 {
-  "mensaje": "Nombre, precio y duracion son obligatorios"
+  "mensaje": "Nombre y duracion son obligatorios"
 }
 ```
 
